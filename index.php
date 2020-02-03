@@ -1,7 +1,10 @@
 <?php
 include "config.php";
 include "templates/header.php";
+?>
 
+<div class="gallery">
+<?php
 //берем только данные, необходимые для рендеринга галереи. Детальную информацию по товару запросим из карточки товара
 $sql_sorted = "SELECT id, brand, model,available, pic_path, price  FROM goods ORDER BY view desc";
 
@@ -21,4 +24,4 @@ while ($data = mysqli_fetch_assoc($query)) { ?>
 mysqli_close($link);
 include "templates/footer.php";
 ?>
-
+</div>

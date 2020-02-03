@@ -5,8 +5,6 @@ include "templates/header.php";
 
 $id = $_GET['id'];
 
-//echo $id;
-
 $sql_view_plus = "UPDATE goods SET view=view+1 WHERE id='".$id."'";
 $query = mysqli_query($link, $sql_view_plus);
 
@@ -15,6 +13,14 @@ $query = mysqli_query($link, $sql_good_data);
 
 //так как запрос по id, а он уникален и это конролируется на уровне БД, то выводим не в цикле
 $good_data = mysqli_fetch_assoc($query);
+
+//если пользователь авторизован (есть куки), то на кнокпку (купить) повесима ссылку на переход в обработчик корзины, который потом перекине на саму корзину
+//если пользователь не авторизован, то на кнопку (купить) повесим ссылку на страницу авторизации
+if (!empty($_COOKIE['user_id'])) {
+    $buy_link = "/basket_proc.php?user_id=".$_COOKIE['user_id']."&good_id=".$id."&action=add";
+} else {
+    $buy_link = "/auth.php";
+}
 ?>
 
 <div class="card_pic_desc">
@@ -23,11 +29,11 @@ $good_data = mysqli_fetch_assoc($query);
             <img class="card_img" src="/img<?=$good_data['full_pic_path']?>" alt="фото <?=$good_data['brand']?> <?=$good_data['model']?>">
         </a>
     </div>
-    <div class="card_desc">
+    <div class="card_desc" data-name="<?=$good_data['brand']?> <?=$good_data['model']?>" data-price="<?=$good_data['price']?>"  data-goodid="<?=$id?>">
         <h1><?=$good_data['brand']?> <?=$good_data['model']?></h1>
         <p>Арикул: </p>
         <p>Цена: <span class="card_price"><?=$good_data['price']?></span></p>
-        <button>Купить</button>
+        <a href="<?=$buy_link?>"><button class="card_button">Купить</button></a>
         <p>Количество просмотров: <?=$good_data['view']?></p>
         <p>Количество товаров на складе: <?=$good_data['available']?></p>
     </div>
